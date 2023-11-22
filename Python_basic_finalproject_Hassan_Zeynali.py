@@ -67,26 +67,107 @@ def display_rm_r(dirc):
     except OSError as e:
         print (e)
 
+#def display_cp(sour, dest):
+#    name = os.path.basename(sour)
+#    if name.find(".") == -1:
+#       try:
+#            dest = shutil.copytree(sour, dest)
+#            print (f"Copy a directory from {sour} to {dest}")
+#        except OSError as e:
+#            print (e)
+#    else:
+#        try:
+#            dest = shutil.copyfile(sour, dest)
+#            print (f"Copy a file from {sour} to {dest}")
+#        except OSError as e:
+#            print (e)
+def cp_file (sour, dest):
+    with open (sour, "r") as f_read:
+        data = f_read.read()
+    with open (dest, "w") as f_write:
+        f_write.write(data)
+    print (f"Copy a file from {sour} to {dest}")
+
+def find_files (sour):
+    file_with_path = []
+    for pa, dirs, files in os.walk(sour):
+        for f in files:
+            f_path = os.path.join(pa, f)
+            file_with_path.append(f_path)
+    return file_with_path
+
+def cp_file_in_dir (file_in_dir, dest):
+    for f in file_in_dir:    
+        with open (f, "r") as f_read:
+            data = f_read.read()
+        name = os.path.basename(f)
+        new_path = os.path.join(dest, name) 
+        with open (new_path, "w") as f_write:
+            f_write.write(data)
+
+def cp_dir (sour, dest):
+    file_in_dir = find_files(sour)
+    cp_file_in_dir (file_in_dir, dest)
+    print (f"Copy a directory from {sour} to {dest}")
+
 def display_cp(sour, dest):
-    s = os.path.basename(sour)
-    if s.find(".") == -1:
+    name = os.path.basename(sour)
+    if name.find(".") == -1:
         try:
-            dest = shutil.copytree(sour, dest)
+            cp_dir (sour, dest)
             print (f"Copy a directory from {sour} to {dest}")
         except OSError as e:
             print (e)
     else:
         try:
-            dest = shutil.copyfile(sour, dest)
+            cp_file(sour, dest)
             print (f"Copy a file from {sour} to {dest}")
         except OSError as e:
             print (e) 
 
+#def display_mv(sour, dest):
+#    try:
+#        mov = shutil.move (sour, dest)
+#        print (f"Move a file or directory from {sour} to {dest}")
+#    except OSError as e:
+#            print (e)
+
+def mv_file (sour, dest):
+    with open (sour, "r") as f_read:
+        data = f_read.read()
+    with open (dest, "w") as f_write:
+        f_write.write(data)
+    print (f"Move a file from {sour} to {dest}")
+    os.remove (sour)
+
+def mv_file_in_dir (file_in_dir, dest):
+    for f in file_in_dir:    
+        with open (f, "r") as f_read:
+            data = f_read.read()
+        name = os.path.basename(f)
+        new_path = os.path.join(dest, name) 
+        with open (new_path, "w") as f_write:
+            f_write.write(data)
+        os.remove(f)
+
+def mv_dir (sour, dest):
+    file_in_dir = find_files(sour)
+    mv_file_in_dir (file_in_dir, dest)
+    print (f"Move a directory from {sour} to {dest}")
+
 def display_mv(sour, dest):
-    try:
-        mov = shutil.move (sour, dest)
-        print (f"Move a file or directory from {sour} to {dest}")
-    except OSError as e:
+    name = os.path.basename(sour)
+    if name.find(".") == -1:
+        try:
+            mv_dir (sour, dest)
+            print (f"Move a directory from {sour} to {dest}")
+        except OSError as e:
+            print (e)
+    else:
+        try:
+            mv_file(sour, dest)
+            print (f"Move a file from {sour} to {dest}")
+        except OSError as e:
             print (e)
 
 def display_find (name, path):
