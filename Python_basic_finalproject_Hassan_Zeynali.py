@@ -12,14 +12,16 @@ def setup():
     parser.add_argument("-sour", type= str, help="Get source for command")
     parser.add_argument("-dest", type= str, help="Get destination for command")
     parser.add_argument("-name", type= str, help="Get name of files or directories for find command")
-    parser.add_argument("--ls", action="store_true", help="List directory contents at `path`, or the current directory if no path is given.")
-    parser.add_argument("--cd", action="store_true", help="Change the working directory to path.")
+    parser.add_argument("-typ", type= str, help="Get type of a file for command")
+    parser.add_argument("-l","--ls", action="store_true", help="List directory contents at `path`, or the current directory if no path is given.")
+    parser.add_argument("-cd","--cd", action="store_true", help="Change the working directory to path.")
     parser.add_argument("--mkdir", action="store_true", help="Create a new directory at path.")
     parser.add_argument("--rmdir", action="store_true", help="Remove the directory at path if it is empty.")
     parser.add_argument("--rm", action="store_true", help="Remove the file specified by file.")
     parser.add_argument("--rm-r", action="store_true", help="Remove the directory at directory and its contents recursively.")
     parser.add_argument("--cp", action="store_true", help="Copy a file or directory from source to destination.")
     parser.add_argument("--mv", action="store_true", help="Move a file or directory from source to destination.")
+    parser.add_argument("--find-type","-t", action="store_true", help="Search for type of files matching pattern starting from path.")
     parser.add_argument("--find", action="store_true", help="Search for files or directories matching pattern starting from path.")
     parser.add_argument("--cat", action="store_true", help="Output the contents of the file.")
     parser.add_argument("--pwd", action="store_true", help="Display Current directory")
@@ -95,6 +97,15 @@ def find_files (sour):
             f_path = os.path.join(pa, f)
             file_with_path.append(f_path)
     return file_with_path
+
+# def find_files_type (sour):
+#     file_type_with_path = []
+#     for pa, dirs, files in os.walk(sour):
+#         for type in files.split('.')[1]:
+#             f_path = os.path.join(pa, type)
+#             file_type_with_path.append(f_path)
+#     return file_type_with_path
+
 
 def cp_file_in_dir (file_in_dir, dest):
     for f in file_in_dir:    
@@ -175,14 +186,29 @@ def display_find (name, path):
         result = []
         for pa, dirs, files in os.walk(path):
             if name in dirs:
+                print(name)
                 result.append(os.path.join(pa, name))
         print(result)
     else:
         result = []
         for pa, dirs, files in os.walk(path):
             if name in files:
+                print(name)
                 result.append(os.path.join(pa, name))
         print(result)
+
+def display_find_type (typ, path):
+    result = []
+    for pa, dirs, files in os.walk(path):
+        for file in files:
+            if file.find('.') == -1:
+                pass
+            else:
+                if typ == file.split('.')[1]:
+
+                    result.append(os.path.join(pa, file))
+                    print(result)
+
 
 def display_cat(file):
     with open (file , "r") as f:
@@ -221,6 +247,8 @@ if args.dest:
     dest = args.dest
 if args.name:
     name = args.name
+if  args.typ:
+    typ = args.typ
 if args.ls:
     display_ls(path)
 if args.cd:
@@ -239,6 +267,8 @@ if args.mv:
     display_mv(sour, dest)
 if args.find:
     display_find (name, path)
+if args.find_type:
+    display_find_type(typ , path)
 if args.cat:
     display_cat(file)  
 
